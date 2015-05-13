@@ -1,43 +1,39 @@
 /* Exercício 1: Criar uma transição para quando o mouse estiver em cima dos
  * botões play/stop (para que o elemento se revele lentamente)
  */
+ #controles ul {}
 
 /*
- * Exercício 2: Criar uma imagem sprite com as imagens de todos os 9 animais e,
- * assim, fazer com que a página carregue mais rápido.
- *
- * Dica: você vai precisar alterar o caminho da imagem (para apontar para a
- * sprite). O código html das imagens dos animais é gerado dinamicamente por
- * jogo.js. Mais especificamente, procure pela função preencheAnimaisNaTela().
- */
-.animal { }
-.animal img { }
-#peixe img { }
-#leao img { }
-#gato img { }
-#cachorro img { }
-#girafa img { }
-#rato img { }
-#hipopotamo img { }
-#coelho img { }
-#urso img { }
-
-/*
- * Exercício 3: Você deve implementar uma metáfora visual para cada um dos 4
+ * Exercício 2: Você deve implementar uma metáfora visual para cada um dos 4
  * estados dos animais. Algumas sugestões:
  *   - agitado: animal piscando (opacidade variando)
  *   - alimentado: uma borda verde no animal e o animal fica girando de alegria
  *   - perturbado: animal fica pulsando
  *   - instinto-selvagem: animal dá um salto e cresce, com uma borda vermelha
  */
-.agitado { }
-.agitado img { }
+.agitado {}
+.agitado img {}
 
-.alimentado { }
-.alimentado img { }
+.alimentado {}
+.alimentado img {}
 
-.perturbado { }
-.perturbado img { }
+.perturbado {}
+.perturbado img {}
 
-.instinto-selvagem { }
-.instinto-selvagem img { }
+.instinto-selvagem {}
+.instinto-selvagem img {}
+
+/*
+ * Exercício 3: Criar uma imagem sprite com as imagens dos botões de controle
+ * (icone-comecar.png e icone-parar.png). Sugestões:
+ *   - Usar o nome: sprite-controles.png
+ *   - Usar o paint.NET (ou Photoshop) para gerar a nova imagem (sprite)
+ *
+ */
+
+.comecar,
+.parar {}
+
+.comecar {}
+
+.parar {}

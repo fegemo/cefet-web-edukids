@@ -119,16 +119,15 @@ body {
   height: 1em;
   width: 1em;
   display: inline-block;
-  background-image: url('imgs/controles.png');
   vertical-align: middle;
 }
 
 .comecar {
-  background-position: 0 0;
+  background-image: url('imgs/icone-comecar.png');
 }
 
 .parar {
-  background-position: -24px 0;
+  background-image: url('imgs/icone-parar.png');
 }
 
 /* -----------------------------------------
