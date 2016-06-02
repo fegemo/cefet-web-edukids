@@ -15,17 +15,17 @@ var animaisTodos = [
 ];
 
 var temporizador,
-    pontuacao = {
-      pontos: 0
-    };
+  pontuacao = {
+    pontos: 0
+  };
 var TEMPO_PARA_DAR_COMIDA = 4000;
 var animais = [];
 
 function sorteiaAnimais(quantos) {
   var animaisTodosCopia = animaisTodos.slice(0),
-      indiceSorteado,
-      animalSorteado,
-      sorteio = [];
+    indiceSorteado,
+    animalSorteado,
+    sorteio = [];
 
   for (var i = 0; i < quantos; i++) {
     indiceSorteado = Math.floor(Math.random() * animaisTodosCopia.length);
@@ -38,8 +38,8 @@ function sorteiaAnimais(quantos) {
 
 function preencheAnimaisNaTela() {
   var tela = document.getElementById('conteudo'),
-      markupAnimais = '',
-      i;
+    markupAnimais = '',
+    i;
 
   for (i = 0; i < animais.length; i++) {
     markupAnimais += '<figure class="animal" id="' + animais[i] + '">' +
@@ -50,22 +50,22 @@ function preencheAnimaisNaTela() {
   tela.innerHTML = markupAnimais;
   var elementoAnimais = document.getElementsByClassName('animal');
   for (i = 0; i < elementoAnimais.length; i++) {
-    elementoAnimais[i].onclick = cliqueAnimal;
+    elementoAnimais[i].addEventListener('click', cliqueAnimal);
   }
 }
 
 function escolheAnimal() {
   var indiceSorteado = Math.floor(Math.random() * animais.length),
-      animalSorteado = animais[indiceSorteado],
-      elementoSorteado = document.getElementById(animalSorteado),
-      comandoElemento = document.getElementById('comando');
+    animalSorteado = animais[indiceSorteado],
+    elementoSorteado = document.getElementById(animalSorteado),
+    elementoComando = document.getElementById('comando');
 
   for (var i = 0; i < animais.length; i++) {
     var elementoAnimal = document.getElementById(animais[i]);
     if (elementoAnimal.classList.contains('agitado')) {
       elementoAnimal.classList.remove('agitado');
       elementoAnimal.classList.add('instinto-selvagem');
-      pontuacao.pontos -= 2;
+      atualizaPontuacao(pontuacao.pontos - 2);
       window.setTimeout(function(el) {
         return function() {
           el.classList.remove('instinto-selvagem');
@@ -74,37 +74,44 @@ function escolheAnimal() {
     }
   }
 
-  comando.innerHTML = animalSorteado;
-  comando.classList.add('visivel');
+  elementoComando.innerHTML = animalSorteado;
+  elementoComando.classList.add('visivel');
 
   elementoSorteado.classList.add('agitado');
   window.setTimeout(function() {
-    comando.classList.remove('visivel');
+    elementoComando.classList.remove('visivel');
   }, TEMPO_PARA_DAR_COMIDA);
 
   // registra a chamada para o próximo animal
-  temporizador = window.setTimeout(escolheAnimal, TEMPO_PARA_DAR_COMIDA + Math.random() * TEMPO_PARA_DAR_COMIDA/2);
+  temporizador = window.setTimeout(escolheAnimal,
+    TEMPO_PARA_DAR_COMIDA + Math.random() * TEMPO_PARA_DAR_COMIDA/2);
 }
 
 function cliqueAnimal(e) {
   var elementoAnimal = e.currentTarget,
       elementoComando = document.getElementById('comando');
   if (elementoAnimal.classList.contains('agitado')) {
-    pontuacao.pontos += 1;
+    // animal com fome foi clicado - ganha 1 ponto
+    atualizaPontuacao(pontuacao.pontos + 1);
     elementoAnimal.classList.remove('agitado');
     elementoAnimal.classList.add('alimentado');
     elementoComando.classList.remove('visivel');
     window.setTimeout(function() {
       elementoAnimal.classList.remove('alimentado');
     }, 1000);
-    window.clearInterval(temporizador);
-    temporizador = window.setTimeout(escolheAnimal, TEMPO_PARA_DAR_COMIDA/8 + Math.random() * TEMPO_PARA_DAR_COMIDA/4);
+    window.clearTimeout(temporizador);
+    temporizador = window.setTimeout(escolheAnimal,
+      TEMPO_PARA_DAR_COMIDA/2 + Math.random() * TEMPO_PARA_DAR_COMIDA/4);
   } else if (!elementoAnimal.classList.contains('alimentado')) {
+    // animal quieto foi clicado - perde 1 ponto
     elementoAnimal.classList.add('perturbado');
-    pontuacao.pontos -= 1;
+    atualizaPontuacao(pontuacao.pontos - 1);
     window.setTimeout(function() {
       elementoAnimal.classList.remove('perturbado');
     }, 1000);
+    window.clearTimeout(temporizador);
+    temporizador = window.setTimeout(escolheAnimal,
+      TEMPO_PARA_DAR_COMIDA + Math.random() * TEMPO_PARA_DAR_COMIDA/2);
   }
 }
 
@@ -113,7 +120,7 @@ function iniciaJogo() {
 }
 
 function comecar() {
-  pontuacao.pontos = 0;
+  atualizaPontuacao(0);
   animais = sorteiaAnimais(5);
   preencheAnimaisNaTela();
   iniciaJogo();
@@ -125,34 +132,35 @@ function parar() {
       elementoComando = document.getElementById('comando');
 
   for (var i = 0; i < elementoAnimais.length; i++) {
-    elementoAnimais[i].classList.remove('agitado', 'alimentado', 'perturbado', 'instinto-selvagem');
-    elementoAnimais[i].onclick = null;
+    elementoAnimais[i].classList.remove(
+      'agitado',
+      'alimentado',
+      'perturbado',
+      'instinto-selvagem');
+    elementoAnimais[i].removeEventListener('click', cliqueAnimal);
   }
 
-  comando.classList.remove('visivel');
+  elementoComando.classList.remove('visivel');
+}
+
+function atualizaPontuacao(nova) {
+  var elementoPontuacao = document.getElementById('pontuacao');
+
+  pontuacao.pontos = nova;
+  elementoPontuacao.innerHTML = pontuacao.pontos;
+  elementoPontuacao.classList.remove('positiva');
+  elementoPontuacao.classList.remove('negativa');
+  if (pontuacao.pontos > 0) {
+    elementoPontuacao.classList.add('positiva');
+  } else if (pontuacao.pontos < 0) {
+    elementoPontuacao.classList.add('negativa');
+  }
 }
 
 window.onload = function() {
   var botaoComecar = document.getElementById('comecar'),
-      botaoParar = document.getElementById('parar'),
-      elementoPontuacao = document.getElementById('pontuacao');
+      botaoParar = document.getElementById('parar');
 
-  Object.observe(pontuacao, function(mudancas) {
-    var i;
-    for (i = 0; i < mudancas.length; i++) {
-      if (mudancas[i].name === 'pontos') {
-        elementoPontuacao.innerHTML = pontuacao.pontos;
-        elementoPontuacao.classList.remove('positiva');
-        elementoPontuacao.classList.remove('negativa');
-        if (pontuacao.pontos > 0) {
-          elementoPontuacao.classList.add('positiva');
-        } else if (pontuacao.pontos < 0) {
-          elementoPontuacao.classList.add('negativa');
-        }
-      }
-    }
-  });
-
-  botaoComecar.onclick = comecar;
-  botaoParar.onclick = parar;
+  botaoComecar.addEventListener('click', comecar);
+  botaoParar.addEventListener('click', parar);
 };
